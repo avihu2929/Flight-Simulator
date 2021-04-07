@@ -24,69 +24,66 @@ public class MainWindowController {
 
     public Label label;
 
-    public void openFile() throws ParserConfigurationException, IOException, SAXException {
+    public void openFile(){
 
         FileChooser fc = new FileChooser();
         fc.setTitle("Choose flight data file");
         fc.setInitialDirectory(new File("./resources"));
         File chosenFile = fc.showOpenDialog(null);
         if(chosenFile != null){
-            System.out.println(chosenFile.getName());
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            readXML(chosenFile);
+        }
+    }
+
+    public void readXML(File file){
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        try {
 
             dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
-
-            // parse XML file
             DocumentBuilder db = dbf.newDocumentBuilder();
 
-            Document doc = db.parse(chosenFile);
-
-            // optional, but recommended
-            // http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+            Document doc = db.parse(file);
             doc.getDocumentElement().normalize();
 
             System.out.println("Root Element :" + doc.getDocumentElement().getNodeName());
             System.out.println("------");
-            NodeList list = doc.getElementsByTagName("staff");
-
+            NodeList list = doc.getElementsByTagName("chunk");
             for (int temp = 0; temp < list.getLength(); temp++) {
-
+                if (list.getLength()/2 == temp){
+                    label.setText(label.getText()+"==============================================\n\n");
+                }
                 Node node = list.item(temp);
 
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
 
                     Element element = (Element) node;
+                    String name = element.getElementsByTagName("name").item(0).getTextContent();
+                    System.out.println("name : " + name);
+                    label.setText(label.getText()+name+"\n");
 
-                    // get staff's attribute
-                    String id = element.getAttribute("id");
+                    String type = element.getElementsByTagName("type").item(0).getTextContent();
+                    System.out.println("type : " + type);
+                    label.setText(label.getText()+type+"\n");
 
-                    // get text
-                    String firstname = element.getElementsByTagName("firstname").item(0).getTextContent();
-                    String lastname = element.getElementsByTagName("lastname").item(0).getTextContent();
-                    String nickname = element.getElementsByTagName("nickname").item(0).getTextContent();
+                    if (element.getElementsByTagName("format").item(0)!=null){
+                        String format = element.getElementsByTagName("format").item(0).getTextContent();
+                        System.out.println("format : " + format);
+                        label.setText(label.getText()+format+"\n");
+                    }
 
-                    NodeList salaryNodeList = element.getElementsByTagName("salary");
-                    String salary = salaryNodeList.item(0).getTextContent();
-
-                    // get salary's attribute
-                    String currency = salaryNodeList.item(0).getAttributes().getNamedItem("currency").getTextContent();
-
-                    System.out.println("Current Element :" + node.getNodeName());
-                    System.out.println("Current Element :" + node.getNodeName());
-                    System.out.println("First Name : " + firstname);
-                    System.out.println("Last Name : " + lastname);
-                    System.out.println("Nick Name : " + nickname);
-                    System.out.printf("Salary [Currency] : %,.2f [%s]%n%n", Float.parseFloat(salary), currency);
-                    label.setText("Current Element :" + node.getNodeName());
-                    label.setText(label.getText()+"\n"+"Current Element :" + node.getNodeName());
-                    label.setText(label.getText()+"\n"+"First Name : " + firstname);
-                    label.setText(label.getText()+"\n"+"Last Name : " + lastname);
-                    label.setText(label.getText()+"\n"+"Salary : "+Float.parseFloat(salary));
+                    String in_node = element.getElementsByTagName("node").item(0).getTextContent();
+                    System.out.println("node : " + in_node);
+                    label.setText(label.getText()+in_node+"\n\n");
                 }
             }
+
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            e.printStackTrace();
         }
 
-
     }
+
 }
