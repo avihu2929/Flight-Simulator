@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
 <BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
@@ -29,7 +38,93 @@
         </menus>
       </MenuBar>
    </top>
+   <left>
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <content>
+            <Label id="label" fx:id="label" />
+         </content>
+      </ScrollPane>
+   </left>
    <center>
-      <Label fx:id="label" id="label" BorderPane.alignment="CENTER" />
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" BorderPane.alignment="CENTER">
+         <items>
+            <SplitPane dividerPositions="0.5">
+               <items>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <center>
+                        <LineChart BorderPane.alignment="CENTER">
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                     </center></BorderPane>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <center>
+                        <LineChart BorderPane.alignment="CENTER">
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                     </center></BorderPane>
+               </items>
+            </SplitPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <center>
+                  <LineChart BorderPane.alignment="CENTER">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </LineChart>
+               </center></BorderPane>
+         </items>
+      </SplitPane>
    </center>
+   <right>
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+         <items>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <left>
+                  <Label text="aileron" BorderPane.alignment="CENTER" />
+               </left>
+               <top>
+                  <Label text="elevators" BorderPane.alignment="CENTER" />
+               </top>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <center>
+                  <Label text="clocks" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+         </items>
+      </SplitPane>
+   </right>
+    <bottom>
+    <AnchorPane prefHeight="55.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+    <children>
+    <Button layoutX="7.0" layoutY="8.0" mnemonicParsing="false" text="Open" />
+    <Button layoutX="53.0" layoutY="8.0" mnemonicParsing="false" text="&lt;&lt;" />
+    <Button layoutX="86.0" layoutY="8.0" mnemonicParsing="false" text="&lt;" />
+    <Button layoutX="111.0" layoutY="8.0" mnemonicParsing="false" text="Start" />
+    <Button layoutX="152.0" layoutY="8.0" mnemonicParsing="false" text="Pause" />
+    <Button layoutX="200.0" layoutY="8.0" mnemonicParsing="false" text="Stop" />
+    <Button layoutX="241.0" layoutY="8.0" mnemonicParsing="false" text="&gt;" />
+    <Button layoutX="266.0" layoutY="8.0" mnemonicParsing="false" text="&gt;&gt;" />
+    <Slider layoutX="7.0" layoutY="36.0" prefHeight="14.0" prefWidth="456.0" />
+    <TextField layoutX="372.0" layoutY="7.0" prefHeight="26.0" prefWidth="43.0" text="1.0" />
+        <Label layoutX="424.0" layoutY="12.0" text="00:00:00" />
+        <Label layoutX="307.0" layoutY="12.0" text="Play Speed" />
+    </children>
+    </AnchorPane>
+    </bottom>
+
+
 </BorderPane>
