@@ -313,8 +313,9 @@
  <input>
    <line_separator>newline</line_separator>
    <var_separator>,</var_separator>
- 
-    <!-- Flight Controls -->
+
+
+     <!-- Flight Controls -->
    <chunk>
     <name>aileron</name>
     <type>float</type>
