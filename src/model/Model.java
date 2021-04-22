@@ -17,7 +17,9 @@ import java.util.Observable;
 
 public class Model extends Observable {
 
-    String FeaturesList;
+    String featuresList;
+    float[][] flightData;
+    int time = 0;
     public void openFile(int type){
 
         //file chooser opens a window to choose xml file
@@ -51,11 +53,29 @@ public class Model extends Observable {
     }
 
     public void readCSV(File file) throws IOException {
+        flightData = new float[2174][42];
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-        String line = null;
-        while ((line= bufferedReader.readLine())!=null){
+        int prevComma=0;
+        int countRow = 0;
+        int countCol = 0;
+        String line = bufferedReader.readLine();
+        while (line!=null){
+            for (int i=0;i<line.length();i++) {
+                if (line.charAt(i) == ',') {
 
+
+                    flightData[countRow][countCol] = Float.parseFloat(line.substring(prevComma, i));
+                    prevComma = i + 1;
+                    countCol++;
+                }
+            }
+            prevComma=0;
+            countCol=0;
+            countRow++;
+            line= bufferedReader.readLine();
         }
+        setChanged();
+        notifyObservers("csv");
 
     }
 
@@ -92,7 +112,7 @@ public class Model extends Observable {
                     Element element = (Element) node;
                     String name = element.getElementsByTagName("name").item(0).getTextContent();
                     System.out.println("name : " + name);
-                    FeaturesList+=name+"\n";
+                    featuresList+=name+"\n";
                    // label.setText(label.getText()+name+"\n");
 
                     /*String type = element.getElementsByTagName("type").item(0).getTextContent();
@@ -109,7 +129,7 @@ public class Model extends Observable {
                     System.out.println("node : " + in_node);
                     label.setText(label.getText()+in_node+"\n\n");*/
                     setChanged();
-                    notifyObservers();
+                    notifyObservers("xml");
 
                 }
             }
@@ -120,7 +140,26 @@ public class Model extends Observable {
 
     }
 
+    public void setTime(int time){
+        this.time = time;
+        setChanged();
+        notifyObservers("time");
+    }
+
+    public  float getFlightData(int feature){
+        return flightData[time][feature];
+
+    }
+
+    public float[] getFlightData(int[] features){
+        float[] data = new float[features.length];
+        for (int i =0; i<features.length;i++){
+            data[i]=flightData[time][features[i]];
+        }
+        return data;
+    }
+
     public String getFeaturesList(){
-        return FeaturesList;
+        return featuresList;
     }
 }

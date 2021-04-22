@@ -9,7 +9,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-               <MenuItem mnemonicParsing="false"  text="Open" />
+               <MenuItem mnemonicParsing="false" text="Open" />
               <MenuItem mnemonicParsing="false" text="Close" />
             </items>
           </Menu>
@@ -29,7 +29,7 @@
    <bottom>
       <AnchorPane prefHeight="55.0" prefWidth="400.0" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="7.0" layoutY="8.0" mnemonicParsing="false" text="Open" />
+            <Button layoutX="7.0" layoutY="8.0" mnemonicParsing="false" onAction="#openButton" text="Open" />
             <Button layoutX="53.0" layoutY="8.0" mnemonicParsing="false" text="&lt;&lt;" />
             <Button layoutX="86.0" layoutY="8.0" mnemonicParsing="false" text="&lt;" />
             <Button layoutX="111.0" layoutY="8.0" mnemonicParsing="false" text="Start" />
@@ -37,7 +37,7 @@
             <Button layoutX="200.0" layoutY="8.0" mnemonicParsing="false" text="Stop" />
             <Button layoutX="241.0" layoutY="8.0" mnemonicParsing="false" text="&gt;" />
             <Button layoutX="266.0" layoutY="8.0" mnemonicParsing="false" text="&gt;&gt;" />
-            <Slider layoutX="7.0" layoutY="36.0" prefHeight="14.0" prefWidth="456.0" />
+            <Slider fx:id="time_slider" blockIncrement="1.0" layoutX="7.0" layoutY="36.0" majorTickUnit="500.0" max="2000.0" minorTickCount="250" prefHeight="14.0" prefWidth="456.0" showTickLabels="true" showTickMarks="true" />
             <TextField layoutX="372.0" layoutY="7.0" prefHeight="26.0" prefWidth="43.0" text="1.0" />
             <Label layoutX="424.0" layoutY="12.0" text="00:00:00" />
             <Label layoutX="307.0" layoutY="12.0" text="Play Speed" />
@@ -47,7 +47,7 @@
    <left>
       <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <content>
-            <Label id="label" fx:id="FeaturesLabel" />
+            <Label id="label" fx:id="features_label" />
          </content>
       </ScrollPane>
    </left>
@@ -62,10 +62,10 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Label" GridPane.columnIndex="1" />
-            <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="joystick_label" text="Label" GridPane.columnIndex="1" />
+            <Label fx:id="clocks_label" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Label" GridPane.rowIndex="1" />
-            <SplitPane prefHeight="50.0" prefWidth="290.0" />
+            <SplitPane  prefHeight="50.0" prefWidth="290.0" />
          </children>
       </GridPane>
    </center>
