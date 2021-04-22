@@ -25,14 +25,14 @@ public class MainWindow extends Application {
       //  BorderPane root =fxl.load(getClass().getResource("main_window.fxml").openStream());
         Parent root = fxl.load(getClass().getResource("main_window.fxml").openStream());
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 400, 275));
+        primaryStage.setScene(new Scene(root, 475, 275));
 
         MainWindowController mwc = fxl.getController();
         mwc.setViewModel(vm);
         vm.addObserver(mwc);
 
         primaryStage.show();
-        m.loadXML(new File("resources/playback_small.xml"));
+        m.readXML(new File("resources/playback_small.xml"));
     }
 
 

@@ -24,6 +24,9 @@ public class ViewModel extends Observable implements Observer {
 
 
     }
+    public void openCSV(){
+        m.openFile(2);
+    }
 
     @Override
     public void update(java.util.Observable o, Object arg) {

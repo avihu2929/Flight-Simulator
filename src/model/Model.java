@@ -11,33 +11,57 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.Observable;
 
 public class Model extends Observable {
 
     String FeaturesList;
-    public void openFile(){
+    public void openFile(int type){
 
         //file chooser opens a window to choose xml file
         FileChooser fc = new FileChooser();
         fc.setTitle("Choose settings file");
         fc.setInitialDirectory(new File("./resources"));
 
+        if (type==1){
 
-        //this sets the window to only show xml files
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter(".xml","*.xml"));
-        File chosenFile = fc.showOpenDialog(null);
+            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter(".xml","*.xml"));
+            File chosenFile = fc.showOpenDialog(null);
 
-        if(chosenFile != null){
-            loadXML(chosenFile);
+            if(chosenFile != null){
+                readXML(chosenFile);
+            }
+        }else if(type==2){
+
+            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter(".csv","*.csv"));
+            File chosenFile = fc.showOpenDialog(null);
+
+            if(chosenFile != null){
+                try {
+                    readCSV(chosenFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+
+    }
+
+    public void readCSV(File file) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        String line = null;
+        while ((line= bufferedReader.readLine())!=null){
+
+        }
+
     }
 
 
 
-    public void loadXML(File file){
+    public void readXML(File file){
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 

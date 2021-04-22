@@ -1,5 +1,6 @@
 package view;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,18 +32,25 @@ import java.util.Observer;
 public class MainWindowController implements Observer {
 
 
+    public Label joystick_label;
+    public Label clocks_label;
+    public Label features_label;
     ViewModel vm;
-    public Label FeaturesLabel;
 
     public void setViewModel(ViewModel vm){
         this.vm = vm;
         //vm.FeaturesLabel.bind(FeaturesLabel.textProperty());
-        FeaturesLabel.textProperty().bind(vm.FeaturesLabel);
+        features_label.textProperty().bind(vm.FeaturesLabel);
+
     }
 
 
     @Override
     public void update(Observable o, Object arg) {
 
+    }
+
+    public void openButton(ActionEvent actionEvent) {
+        vm.openCSV();
     }
 }
