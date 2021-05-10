@@ -1,5 +1,8 @@
 package model;
 
+import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.stage.FileChooser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -14,12 +17,45 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.FormatFlagsConversionMismatchException;
 import java.util.Observable;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Model extends Observable {
 
+    public void pauseTime() {
+        run = false;
+    }
+
+    public  void stopTime(){
+        run = false;
+        time = 0;
+        setChanged();
+        notifyObservers("time");
+    }
+
+    private class TimeThread extends TimerTask{
+
+        @Override
+        public void run() {
+            if (run) {
+                setTime(time + 1);
+
+
+            }
+
+        }
+
+    }
+    boolean run = false;
+    int row,col =0;
     String featuresList;
     float[][] flightData;
     int time = 0;
+    public DoubleProperty Time = new SimpleDoubleProperty();
+
     public void openFile(int type){
 
         //file chooser opens a window to choose xml file
@@ -52,8 +88,32 @@ public class Model extends Observable {
 
     }
 
+    public void initFlightData(File file) throws IOException {
+
+       // flightData = new float[2174][42];
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        String line = bufferedReader.readLine();
+        for (int i=0;i<line.length();i++) {
+            if (line.charAt(i) == ',') {
+                col++;
+            }
+        }
+        col++;
+        while (line!=null){
+                row++;
+                line= bufferedReader.readLine();
+        }
+
+        flightData = new float[row][col];
+
+
+        }
+
+
+
     public void readCSV(File file) throws IOException {
-        flightData = new float[2174][42];
+       // flightData = new float[2174][42];
+        initFlightData(file);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         int prevComma=0;
         int countRow = 0;
@@ -78,8 +138,6 @@ public class Model extends Observable {
         notifyObservers("csv");
 
     }
-
-
 
     public void readXML(File file){
 
@@ -141,10 +199,26 @@ public class Model extends Observable {
     }
 
     public void setTime(int time){
-        this.time = time;
-        setChanged();
-        notifyObservers("time");
+        if (time<row) {
+            this.time = time;
+            setChanged();
+            notifyObservers("time");
+        }
+
     }
+
+    public void startTime(){
+        //Time = new SimpleDoubleProperty();
+        run = true;
+        TimeThread timeThread = new TimeThread();
+        Timer t = new Timer();
+        t.scheduleAtFixedRate(timeThread, 0,30);
+
+    }
+
+
+
+
 
     public  float getFlightData(int feature){
         return flightData[time][feature];
@@ -159,6 +233,9 @@ public class Model extends Observable {
         return data;
     }
 
+    public int getTime(){
+        return time;
+    }
     public String getFeaturesList(){
         return featuresList;
     }

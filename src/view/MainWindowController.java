@@ -1,6 +1,10 @@
 package view;
 
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.DragEvent;
@@ -18,6 +22,10 @@ public class MainWindowController implements Observer {
     public Label clocks_label;
     public Label features_label;
     public Slider time_slider;
+    public Canvas joystick;
+    public Double aileron;
+    public Button start_btn;
+    public Label time_label;
     ViewModel vm;
 
     public void setViewModel(ViewModel vm){
@@ -25,8 +33,28 @@ public class MainWindowController implements Observer {
         //vm.FeaturesLabel.bind(FeaturesLabel.textProperty());
         features_label.textProperty().bind(vm.FeaturesLabel);
         joystick_label.textProperty().bind(vm.JoystickLabel);
-        vm.Time.bind(time_slider.valueProperty());
+        time_label.textProperty().bind(vm.TimeLabel);
 
+       // time_slider.valueProperty().bind(vm.Time);
+        //time_slider.valueProperty().bind(vm.Time);
+        vm.Time.bindBidirectional(time_slider.valueProperty());
+       // time_slider.setValue(200);
+        vm.Time.addListener((o,ov,nv)->System.out.println(ov+" "+nv));
+      //  vm.Time.addListener((o,ov,nv)->time_slider.setValue(vm.Time.getValue()));
+
+       // time_slider.valueProperty().bind(vm.Time);
+
+        paint();
+    }
+
+    void paint(){
+        GraphicsContext gc = joystick.getGraphicsContext2D();
+
+        //positon width height , size width height
+        gc.strokeOval(joystick.getWidth()/3,joystick.getHeight()/4,joystick.getWidth()/3,joystick.getHeight()/2);
+        gc.fillOval(vm.Aileron.doubleValue(),joystick.getHeight()/4+joystick.getHeight()/8,joystick.getWidth()/6,joystick.getHeight()/4);
+        
+  //joystick.getWidth()/3+joystick.getWidth()/12
     }
 
 
@@ -41,5 +69,15 @@ public class MainWindowController implements Observer {
     }
 
 
+    public void onStart(ActionEvent actionEvent) {
+        vm.startTime();
+    }
 
+    public void onPause(ActionEvent actionEvent) {
+        vm.pauseTime();
+    }
+
+    public void onStop(ActionEvent actionEvent) {
+        vm.stopTime();
+    }
 }
