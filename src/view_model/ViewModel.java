@@ -21,6 +21,8 @@ public class ViewModel extends Observable implements Observer {
     public DoubleProperty Aileron;
     public DoubleProperty Time;
     public StringProperty TimeLabel;
+    public StringProperty Speed;
+    public DoubleProperty MaxSliderValue;
     boolean csvLoaded=false;
 
     public ViewModel(Model m){
@@ -31,7 +33,9 @@ public class ViewModel extends Observable implements Observer {
         Aileron = new SimpleDoubleProperty();
         Time = new SimpleDoubleProperty();
         TimeLabel = new SimpleStringProperty();
-
+        Speed = new SimpleStringProperty();
+        MaxSliderValue = new SimpleDoubleProperty();
+        Speed.addListener((o,ov,nv)->m.setSpeed(Speed.getValue()));
         //when vm.time changes its value set m.time to vm.time
         Time.addListener((o,ov,nv)->m.setTime(Time.intValue()));
     }
@@ -39,6 +43,8 @@ public class ViewModel extends Observable implements Observer {
     public void openCSV(){
         // 2 for csv
         m.openFile(2);
+
+        MaxSliderValue.set(m.row);
 
         //a flag so ui button wont do anything unless the csv has loaded ( see vm.update)
         csvLoaded=true;

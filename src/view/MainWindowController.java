@@ -7,6 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
@@ -26,6 +27,7 @@ public class MainWindowController implements Observer {
     public Double aileron;
     public Button start_btn;
     public Label time_label;
+    public TextField speed_text;
     ViewModel vm;
 
     public void setViewModel(ViewModel vm){
@@ -35,6 +37,8 @@ public class MainWindowController implements Observer {
         joystick_label.textProperty().bind(vm.JoystickLabel);
         time_label.textProperty().bind(vm.TimeLabel);
         vm.Time.bindBidirectional(time_slider.valueProperty());
+        vm.Speed.bindBidirectional(speed_text.textProperty());
+        time_slider.maxProperty().bindBidirectional(vm.MaxSliderValue);
 
         paint();
     }

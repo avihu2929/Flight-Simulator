@@ -36,6 +36,18 @@ public class Model extends Observable {
         notifyObservers("time");
     }
 
+    public void setSpeed(String speed) {
+        if (speed.length()>0){
+           if (speed.charAt(speed.length()-1)!='.') {
+                this.speed = Double.parseDouble(speed);
+                changeSpeed();
+            }
+        }else{
+            this.speed = 0;
+            changeSpeed();
+        }
+    }
+
     private class TimeThread extends TimerTask{
 
         @Override
@@ -49,8 +61,10 @@ public class Model extends Observable {
         }
 
     }
+
+    double speed = 1;
     boolean run = false;
-    int row,col =0;
+    public int row,col =0;
     String featuresList;
     float[][] flightData;
     int time = 0;
@@ -213,17 +227,32 @@ public class Model extends Observable {
             run = true;
             timeThread = new TimeThread();
             t = new Timer();
-            t.scheduleAtFixedRate(timeThread, 0,30);
+            t.scheduleAtFixedRate(timeThread, 0, (long) (1000/speed));
 
         }
 
 
     }
 
+    public void changeSpeed(){
+        if (t!=null) {
+            t.cancel();
+            t = new Timer();
+            timeThread.cancel();
+            timeThread = new TimeThread();
+            t.scheduleAtFixedRate(timeThread, 0, (long) (1000/speed));
+        }
+    }
+
 
     public void stopThreads(){
-        timeThread.cancel();
-        t.cancel();
+        if (timeThread!=null){
+            timeThread.cancel();
+        }
+       if(t!=null){
+           t.cancel();
+       }
+
     }
 
 
