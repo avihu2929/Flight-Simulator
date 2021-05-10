@@ -1,11 +1,13 @@
 package view;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Model;
 import view_model.ViewModel;
 
@@ -33,6 +35,12 @@ public class MainWindow extends Application {
 
         primaryStage.show();
         m.readXML(new File("resources/playback_small.xml"));
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                m.stopThreads();
+            }
+        });
     }
 
 

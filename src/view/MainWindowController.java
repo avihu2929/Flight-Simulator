@@ -30,19 +30,11 @@ public class MainWindowController implements Observer {
 
     public void setViewModel(ViewModel vm){
         this.vm = vm;
-        //vm.FeaturesLabel.bind(FeaturesLabel.textProperty());
+
         features_label.textProperty().bind(vm.FeaturesLabel);
         joystick_label.textProperty().bind(vm.JoystickLabel);
         time_label.textProperty().bind(vm.TimeLabel);
-
-       // time_slider.valueProperty().bind(vm.Time);
-        //time_slider.valueProperty().bind(vm.Time);
         vm.Time.bindBidirectional(time_slider.valueProperty());
-       // time_slider.setValue(200);
-        vm.Time.addListener((o,ov,nv)->System.out.println(ov+" "+nv));
-      //  vm.Time.addListener((o,ov,nv)->time_slider.setValue(vm.Time.getValue()));
-
-       // time_slider.valueProperty().bind(vm.Time);
 
         paint();
     }
@@ -54,7 +46,7 @@ public class MainWindowController implements Observer {
         gc.strokeOval(joystick.getWidth()/3,joystick.getHeight()/4,joystick.getWidth()/3,joystick.getHeight()/2);
         gc.fillOval(vm.Aileron.doubleValue(),joystick.getHeight()/4+joystick.getHeight()/8,joystick.getWidth()/6,joystick.getHeight()/4);
         
-  //joystick.getWidth()/3+joystick.getWidth()/12
+        //joystick.getWidth()/3+joystick.getWidth()/12
     }
 
 
@@ -63,21 +55,11 @@ public class MainWindowController implements Observer {
 
     }
 
-    public void openButton(ActionEvent actionEvent) {
-        vm.openCSV();
+    public void openButton(ActionEvent actionEvent) { vm.openCSV(); }
 
-    }
+    public void onStart(ActionEvent actionEvent) { vm.startTime(); }
 
+    public void onPause(ActionEvent actionEvent) { vm.pauseTime(); }
 
-    public void onStart(ActionEvent actionEvent) {
-        vm.startTime();
-    }
-
-    public void onPause(ActionEvent actionEvent) {
-        vm.pauseTime();
-    }
-
-    public void onStop(ActionEvent actionEvent) {
-        vm.stopTime();
-    }
+    public void onStop(ActionEvent actionEvent) { vm.stopTime(); }
 }

@@ -22,6 +22,7 @@ public class ViewModel extends Observable implements Observer {
     public DoubleProperty Time;
     public StringProperty TimeLabel;
     boolean csvLoaded=false;
+
     public ViewModel(Model m){
         this.m = m;
         m.addObserver(this);
@@ -30,23 +31,22 @@ public class ViewModel extends Observable implements Observer {
         Aileron = new SimpleDoubleProperty();
         Time = new SimpleDoubleProperty();
         TimeLabel = new SimpleStringProperty();
-        //lambda expression initiate listener
+
+        //when vm.time changes its value set m.time to vm.time
         Time.addListener((o,ov,nv)->m.setTime(Time.intValue()));
-
-
     }
 
-
-
     public void openCSV(){
+        // 2 for csv
         m.openFile(2);
+
+        //a flag so ui button wont do anything unless the csv has loaded ( see vm.update)
         csvLoaded=true;
     }
 
-    public void startTime(){
-        m.startTime();
-    }
-
+    public void startTime(){ m.startTime(); }
+    public void pauseTime() { m.pauseTime(); }
+    public void stopTime() { m.stopTime(); }
 
     @Override
     public void update(java.util.Observable o, Object arg) {
@@ -61,38 +61,23 @@ public class ViewModel extends Observable implements Observer {
                             "\nElevators: 0"+
                             "\nRudder: 0");
                 case "time":
-                    //JoystickLabel.set("Aileron: "+getFlightData(0));
                     if (csvLoaded) {
                         int[] features = {0, 1, 2};
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-
+                                Time.set(m.getTime());
                                 TimeLabel.set(m.getTime()+"");
                                 JoystickLabel.set("Aileron: " + m.getFlightData(features)[0] +
                                         "\nElevators: " + m.getFlightData(features)[1] +
                                         "\nRudder: " + m.getFlightData(features)[2]);
                             }
                         });
-
-                    //    Aileron.set(m.getFlightData(features)[0]);
-
                     }
                     break;
-
             }
-
-
-
-
         }
     }
 
-    public void pauseTime() {
-        m.pauseTime();
-    }
 
-    public void stopTime() {
-        m.stopTime();
-    }
 }

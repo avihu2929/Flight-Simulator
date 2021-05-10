@@ -54,7 +54,8 @@ public class Model extends Observable {
     String featuresList;
     float[][] flightData;
     int time = 0;
-    public DoubleProperty Time = new SimpleDoubleProperty();
+    TimeThread timeThread;
+    Timer t;
 
     public void openFile(int type){
 
@@ -90,7 +91,6 @@ public class Model extends Observable {
 
     public void initFlightData(File file) throws IOException {
 
-       // flightData = new float[2174][42];
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         String line = bufferedReader.readLine();
         for (int i=0;i<line.length();i++) {
@@ -209,15 +209,22 @@ public class Model extends Observable {
 
     public void startTime(){
         //Time = new SimpleDoubleProperty();
-        run = true;
-        TimeThread timeThread = new TimeThread();
-        Timer t = new Timer();
-        t.scheduleAtFixedRate(timeThread, 0,30);
+        if (!run){
+            run = true;
+            timeThread = new TimeThread();
+            t = new Timer();
+            t.scheduleAtFixedRate(timeThread, 0,30);
+
+        }
+
 
     }
 
 
-
+    public void stopThreads(){
+        timeThread.cancel();
+        t.cancel();
+    }
 
 
     public  float getFlightData(int feature){
