@@ -123,8 +123,6 @@ public class Model extends Observable {
 
         }
 
-
-
     public void readCSV(File file) throws IOException {
        // flightData = new float[2174][42];
         initFlightData(file);

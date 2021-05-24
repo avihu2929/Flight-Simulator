@@ -35,6 +35,7 @@ public class MainWindowController implements Observer {
 
         features_label.textProperty().bind(vm.FeaturesLabel);
         joystick_label.textProperty().bind(vm.JoystickLabel);
+        clocks_label.textProperty().bind(vm.ClocksLabel);
         time_label.textProperty().bind(vm.TimeLabel);
         vm.Time.bindBidirectional(time_slider.valueProperty());
         vm.Speed.bindBidirectional(speed_text.textProperty());
@@ -48,7 +49,7 @@ public class MainWindowController implements Observer {
 
         //positon width height , size width height
         gc.strokeOval(joystick.getWidth()/3,joystick.getHeight()/4,joystick.getWidth()/3,joystick.getHeight()/2);
-        gc.fillOval(vm.Aileron.doubleValue(),joystick.getHeight()/4+joystick.getHeight()/8,joystick.getWidth()/6,joystick.getHeight()/4);
+       // gc.fillOval(vm.Aileron.doubleValue(),joystick.getHeight()/4+joystick.getHeight()/8,joystick.getWidth()/6,joystick.getHeight()/4);
         
         //joystick.getWidth()/3+joystick.getWidth()/12
     }

@@ -18,7 +18,7 @@ public class ViewModel extends Observable implements Observer {
 
     public StringProperty FeaturesLabel;
     public StringProperty JoystickLabel;
-    public DoubleProperty Aileron;
+    public StringProperty ClocksLabel;
     public DoubleProperty Time;
     public StringProperty TimeLabel;
     public StringProperty Speed;
@@ -26,18 +26,21 @@ public class ViewModel extends Observable implements Observer {
     boolean csvLoaded=false;
 
     public ViewModel(Model m){
+
         this.m = m;
         m.addObserver(this);
+
         FeaturesLabel = new SimpleStringProperty();
         JoystickLabel = new SimpleStringProperty();
-        Aileron = new SimpleDoubleProperty();
+        ClocksLabel = new SimpleStringProperty();
         Time = new SimpleDoubleProperty();
         TimeLabel = new SimpleStringProperty();
         Speed = new SimpleStringProperty();
         MaxSliderValue = new SimpleDoubleProperty();
-        Speed.addListener((o,ov,nv)->m.setSpeed(Speed.getValue()));
+
         //when vm.time changes its value set m.time to vm.time
         Time.addListener((o,ov,nv)->m.setTime(Time.intValue()));
+        Speed.addListener((o,ov,nv)->m.setSpeed(Speed.getValue()));
     }
 
     public void openCSV(){
@@ -65,10 +68,13 @@ public class ViewModel extends Observable implements Observer {
                 case "csv":
                     JoystickLabel.set("Aileron: 0"+
                             "\nElevators: 0"+
-                            "\nRudder: 0");
+                            "\nRudder: 0"+
+                            "\nThrottle: 0");
+                    ClocksLabel.set("Roll: 0"+
+                            "\nPitch: 0");
                 case "time":
                     if (csvLoaded) {
-                        int[] features = {0, 1, 2};
+                        int[] features = {0, 1, 2, 6, 17, 18};
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
@@ -76,7 +82,10 @@ public class ViewModel extends Observable implements Observer {
                                 TimeLabel.set(m.getTime()+"");
                                 JoystickLabel.set("Aileron: " + m.getFlightData(features)[0] +
                                         "\nElevators: " + m.getFlightData(features)[1] +
-                                        "\nRudder: " + m.getFlightData(features)[2]);
+                                        "\nRudder: " + m.getFlightData(features)[2]+
+                                        "\nThrottle: "+ m.getFlightData(features)[3]);
+                                ClocksLabel.set("Roll: "+m.getFlightData(features)[4]+
+                                        "\nPitch: "+m.getFlightData(features)[5]);
                             }
                         });
                     }
