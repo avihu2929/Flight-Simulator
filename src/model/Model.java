@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.net.Socket;
 import java.util.FormatFlagsConversionMismatchException;
 import java.util.Observable;
 import java.util.Timer;
@@ -32,6 +33,12 @@ public class Model extends Observable {
     public  void stopTime(){
         run = false;
         time = 0;
+        try {
+            in.mark(0);
+            in.reset();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         setChanged();
         notifyObservers("time");
     }
@@ -70,6 +77,11 @@ public class Model extends Observable {
     int time = 0;
     TimeThread timeThread;
     Timer t;
+    File csv;
+    Socket fg;
+    BufferedReader in;
+    PrintWriter out;
+    String line;
 
     public void openFile(int type){
 
@@ -146,6 +158,12 @@ public class Model extends Observable {
             countRow++;
             line= bufferedReader.readLine();
         }
+        csv = file;
+        try {
+            connect();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         setChanged();
         notifyObservers("csv");
 
@@ -213,6 +231,14 @@ public class Model extends Observable {
     public void setTime(int time){
         if (time<row) {
             this.time = time;
+            try {
+                if((line=in.readLine())!=null){
+                    out.println(line);
+                    out.flush();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             setChanged();
             notifyObservers("time");
         }
@@ -228,7 +254,6 @@ public class Model extends Observable {
             t.scheduleAtFixedRate(timeThread, 0, (long) (1000/speed));
 
         }
-
 
     }
 
@@ -272,5 +297,19 @@ public class Model extends Observable {
     }
     public String getFeaturesList(){
         return featuresList;
+    }
+
+
+    public void connect() throws IOException, InterruptedException {
+        fg=new Socket("localhost", 5400);
+        in= new BufferedReader(new FileReader(csv));
+        out=new PrintWriter(fg.getOutputStream());
+       /* String line;
+        while((line=in.readLine())!=null) {out.println(line);
+        out.flush();
+        Thread.sleep(100);}
+        out.close();
+        in.close();
+        fg.close();*/
     }
 }
