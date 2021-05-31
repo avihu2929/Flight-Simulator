@@ -301,6 +301,11 @@ public class Model extends Observable {
 
 
     public void connect() throws IOException, InterruptedException {
+        /*
+        PUT THIS IN FLIGHTGEAR SETTINGS
+        --generic=socket,in,10,127.0.0.1,5400,tcp,playback_small
+        --fdm=null
+         */
         fg=new Socket("localhost", 5400);
         in= new BufferedReader(new FileReader(csv));
         out=new PrintWriter(fg.getOutputStream());
