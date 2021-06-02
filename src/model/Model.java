@@ -24,52 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Model extends Observable {
 
-
-
-    public void pauseTime() {
-        run = false;
-    }
-
-    public  void stopTime(){
-        run = false;
-        time = 0;
-        if (connected) {
-            try {
-                in.mark(0);
-                in.reset();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        setChanged();
-        notifyObservers("time");
-    }
-
-    public void setSpeed(String speed) {
-        if (speed.length()>0){
-           if (speed.charAt(speed.length()-1)!='.') {
-                this.speed = Double.parseDouble(speed);
-                changeSpeed();
-            }
-        }else{
-            this.speed = 0;
-            changeSpeed();
-        }
-    }
-
-    private class TimeThread extends TimerTask{
-
-        @Override
-        public void run() {
-            if (run) {
-                setTime(time + 1);
-
-
-            }
-
-        }
-
-    }
     public boolean connected;
     double speed = 1;
     boolean run = false;
@@ -86,6 +40,104 @@ public class Model extends Observable {
     String line;
     String[] features;
 
+    private class TimeThread extends TimerTask{
+
+        @Override
+        public void run() {
+            if (run) {
+                setTime(time + 1);
+            }
+        }
+    }
+
+    //Managing TimeThread funcions --- start
+    public void setTime(int time){
+        if (time<row) {
+            this.time = time;
+     /*       try {
+                if((line=in.readLine())!=null){
+                    out.println(line);
+                    out.flush();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            */
+            if (connected){
+                String line2 = "";
+
+                for (int i = 0; i<flightData[0].length;i++){
+                    line2=line2+flightData[time][i]+",";
+                }
+                out.println(line2);
+                out.flush();
+            }
+
+            setChanged();
+            notifyObservers("time");
+        }
+
+    }
+    public void startTime(){
+        //Time = new SimpleDoubleProperty();
+        if (!run){
+            run = true;
+            timeThread = new TimeThread();
+            t = new Timer();
+            t.scheduleAtFixedRate(timeThread, 0, (long) (1000/speed));
+
+        }
+
+    }
+    public  void stopTime(){
+        run = false;
+        time = 0;
+        if (connected) {
+            try {
+                in.mark(0);
+                in.reset();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        setChanged();
+        notifyObservers("time");
+    }
+    public void pauseTime() {
+        run = false;
+    }
+    public void setSpeed(String speed) {
+        if (speed.length()>0){
+            if (speed.charAt(speed.length()-1)!='.') {
+                this.speed = Double.parseDouble(speed);
+                changeSpeed();
+            }
+        }else{
+            this.speed = 0;
+            changeSpeed();
+        }
+    }
+    public void changeSpeed(){
+        if (t!=null) {
+            t.cancel();
+            t = new Timer();
+            timeThread.cancel();
+            timeThread = new TimeThread();
+            t.scheduleAtFixedRate(timeThread, 0, (long) (1000/speed));
+        }
+    }
+    public void stopThreads(){
+        if (timeThread!=null){
+            timeThread.cancel();
+        }
+        if(t!=null){
+            t.cancel();
+        }
+
+    }
+    //Managing TimeThread funcions --- end
+
+    //Open XML CSV files funcions --- start
     public void openFile(int type){
 
         //file chooser opens a window to choose xml file
@@ -117,27 +169,6 @@ public class Model extends Observable {
 
 
     }
-
-    public void initFlightData(File file) throws IOException {
-
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-        String line = bufferedReader.readLine();
-        for (int i=0;i<line.length();i++) {
-            if (line.charAt(i) == ',') {
-                col++;
-            }
-        }
-        col++;
-        while (line!=null){
-                row++;
-                line= bufferedReader.readLine();
-        }
-
-        flightData = new float[row][col];
-
-
-        }
-
     public void readCSV(File file) throws IOException {
        // flightData = new float[2174][42];
         initFlightData(file);
@@ -171,7 +202,6 @@ public class Model extends Observable {
         notifyObservers("csv");
 
     }
-
     public void readXML(File file){
 
 
@@ -234,67 +264,26 @@ public class Model extends Observable {
         }
 
     }
+    public void initFlightData(File file) throws IOException {
 
-    public void setTime(int time){
-        if (time<row) {
-            this.time = time;
-     /*       try {
-                if((line=in.readLine())!=null){
-                    out.println(line);
-                    out.flush();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        String line = bufferedReader.readLine();
+        for (int i=0;i<line.length();i++) {
+            if (line.charAt(i) == ',') {
+                col++;
             }
-            */
-            if (connected){
-                String line2 = "";
-
-                for (int i = 0; i<flightData[0].length;i++){
-                    line2=line2+flightData[time][i]+",";
-                }
-                out.println(line2);
-                out.flush();
-            }
-
-            setChanged();
-            notifyObservers("time");
+        }
+        col++;
+        while (line!=null){
+            row++;
+            line= bufferedReader.readLine();
         }
 
-    }
+        flightData = new float[row][col];
 
-    public void startTime(){
-        //Time = new SimpleDoubleProperty();
-        if (!run){
-            run = true;
-            timeThread = new TimeThread();
-            t = new Timer();
-            t.scheduleAtFixedRate(timeThread, 0, (long) (1000/speed));
-
-        }
 
     }
-
-    public void changeSpeed(){
-        if (t!=null) {
-            t.cancel();
-            t = new Timer();
-            timeThread.cancel();
-            timeThread = new TimeThread();
-            t.scheduleAtFixedRate(timeThread, 0, (long) (1000/speed));
-        }
-    }
-
-
-    public void stopThreads(){
-        if (timeThread!=null){
-            timeThread.cancel();
-        }
-       if(t!=null){
-           t.cancel();
-       }
-
-    }
+    //Open XML CSV files funcions --- end
 
 
     public  float getFlightData(int feature){
@@ -313,6 +302,7 @@ public class Model extends Observable {
     public int getTime(){
         return time;
     }
+
     public String getFeaturesList(){
         return featuresList;
     }

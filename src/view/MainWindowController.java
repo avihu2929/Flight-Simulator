@@ -44,13 +44,13 @@ public class MainWindowController implements Observer {
     public void setViewModel(ViewModel vm){
         this.vm = vm;
 
-        //features_label.textProperty().bind(vm.FeaturesLabel);
+
         features_list.setItems(vm.FeaturesList);
+
+        //set new chart on change of selected item from feature list
         features_list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observableValue, Object o, Object t1) {
-             //   vm.setFeatureChart(features_list.getSelectionModel().getSelectedIndex());
-              //  features_list.getSelectionModel().selectedItemProperty().toString()
                 System.out.println(features_list.getSelectionModel().getSelectedIndex() );
                 LineChart.getData().clear();
                 LineChart.getData().add(vm.getFeatureChart(features_list.getSelectionModel().getSelectedIndex()));
