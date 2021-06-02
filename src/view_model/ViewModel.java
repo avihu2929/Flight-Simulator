@@ -4,16 +4,22 @@ import com.sun.webkit.Timer;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.XYChart;
 import model.Model;
 
-import java.util.Observable;
-import java.util.Observer;
+import java.io.IOException;
+import java.util.*;
 
 public class ViewModel extends Observable implements Observer {
+
     Model m;
 
     public StringProperty FeaturesLabel;
@@ -22,8 +28,11 @@ public class ViewModel extends Observable implements Observer {
     public DoubleProperty Time;
     public StringProperty TimeLabel;
     public StringProperty Speed;
+    public ObservableList<String> FeaturesList;
     public DoubleProperty MaxSliderValue;
+
     boolean csvLoaded=false;
+    int featureCount = 0;
 
     public ViewModel(Model m){
 
@@ -37,20 +46,33 @@ public class ViewModel extends Observable implements Observer {
         TimeLabel = new SimpleStringProperty();
         Speed = new SimpleStringProperty();
         MaxSliderValue = new SimpleDoubleProperty();
-
+        FeaturesList = FXCollections.observableArrayList();
         //when vm.time changes its value set m.time to vm.time
         Time.addListener((o,ov,nv)->m.setTime(Time.intValue()));
         Speed.addListener((o,ov,nv)->m.setSpeed(Speed.getValue()));
+
     }
 
     public void openCSV(){
         // 2 for csv
-        m.openFile(2);
 
-        MaxSliderValue.set(m.row);
+        if(!csvLoaded){
+            m.openFile(2);
+            MaxSliderValue.set(m.row);
+
+        }
 
         //a flag so ui button wont do anything unless the csv has loaded ( see vm.update)
         csvLoaded=true;
+    }
+
+    public XYChart.Series<Number, Number> getFeatureChart(int feature){
+        return m.getFeatureChart(feature);
+
+    }
+
+    public void connect() throws IOException, InterruptedException {
+        m.connect();
     }
 
     public void startTime(){ m.startTime(); }
@@ -63,13 +85,15 @@ public class ViewModel extends Observable implements Observer {
         if(o==m){
             switch (arg.toString()){
                 case "xml":
-                    FeaturesLabel.set(m.getFeaturesList());
+                    FeaturesList.add(m.getFeatureItem(featureCount));
+                  //  FeaturesLabel.set(m.getFeaturesList());
+                    featureCount++;
                     break;
                 case "csv":
-                    JoystickLabel.set("Aileron: 0"+
-                            "\nElevators: 0"+
-                            "\nRudder: 0"+
-                            "\nThrottle: 0");
+                    JoystickLabel.set(" Aileron: 0"+
+                            "\n Elevators: 0"+
+                            "\n Rudder: 0"+
+                            "\n Throttle: 0");
                     ClocksLabel.set("Roll: 0"+
                             "\nPitch: 0");
                 case "time":
@@ -80,10 +104,10 @@ public class ViewModel extends Observable implements Observer {
                             public void run() {
                                 Time.set(m.getTime());
                                 TimeLabel.set(m.getTime()+"");
-                                JoystickLabel.set("Aileron: " + m.getFlightData(features)[0] +
-                                        "\nElevators: " + m.getFlightData(features)[1] +
-                                        "\nRudder: " + m.getFlightData(features)[2]+
-                                        "\nThrottle: "+ m.getFlightData(features)[3]);
+                                JoystickLabel.set(" Aileron: " + m.getFlightData(features)[0] +
+                                        "\n Elevators: " + m.getFlightData(features)[1] +
+                                        "\n Rudder: " + m.getFlightData(features)[2]+
+                                        "\n Throttle: "+ m.getFlightData(features)[3]);
                                 ClocksLabel.set("Roll: "+m.getFlightData(features)[4]+
                                         "\nPitch: "+m.getFlightData(features)[5]);
                             }

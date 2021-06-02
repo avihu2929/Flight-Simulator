@@ -27,7 +27,7 @@ public class MainWindow extends Application {
       //  BorderPane root =fxl.load(getClass().getResource("main_window.fxml").openStream());
         Parent root = fxl.load(getClass().getResource("main_window.fxml").openStream());
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 475, 275));
+        primaryStage.setScene(new Scene(root, 500, 400));
 
         MainWindowController mwc = fxl.getController();
         mwc.setViewModel(vm);

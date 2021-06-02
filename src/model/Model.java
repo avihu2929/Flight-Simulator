@@ -3,6 +3,7 @@ package model;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.chart.XYChart;
 import javafx.stage.FileChooser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,15 +17,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.Socket;
-import java.util.FormatFlagsConversionMismatchException;
-import java.util.Observable;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Model extends Observable {
+
+
 
     public void pauseTime() {
         run = false;
@@ -33,11 +33,13 @@ public class Model extends Observable {
     public  void stopTime(){
         run = false;
         time = 0;
-        try {
-            in.mark(0);
-            in.reset();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (connected) {
+            try {
+                in.mark(0);
+                in.reset();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         setChanged();
         notifyObservers("time");
@@ -68,7 +70,7 @@ public class Model extends Observable {
         }
 
     }
-
+    public boolean connected;
     double speed = 1;
     boolean run = false;
     public int row,col =0;
@@ -82,6 +84,7 @@ public class Model extends Observable {
     BufferedReader in;
     PrintWriter out;
     String line;
+    String[] features;
 
     public void openFile(int type){
 
@@ -159,17 +162,18 @@ public class Model extends Observable {
             line= bufferedReader.readLine();
         }
         csv = file;
-        try {
+      /*  try {
             connect();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
         setChanged();
         notifyObservers("csv");
 
     }
 
     public void readXML(File file){
+
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -186,11 +190,12 @@ public class Model extends Observable {
             System.out.println("------");
 
             NodeList list = doc.getElementsByTagName("chunk");
-
-            for (int temp = 0; temp < list.getLength(); temp++) {
+            features = new String[list.getLength()/2];
+            for (int temp = 0; temp < list.getLength()/2; temp++) {
 
                 if (list.getLength()/2 == temp){
                     //label.setText(label.getText()+"\n==============================================\n\n");
+
                 }
 
                 Node node = list.item(temp);
@@ -201,6 +206,8 @@ public class Model extends Observable {
                     String name = element.getElementsByTagName("name").item(0).getTextContent();
                     System.out.println("name : " + name);
                     featuresList+=name+"\n";
+                    features[temp]=name;
+                   // featuresList2.add(name);
                    // label.setText(label.getText()+name+"\n");
 
                     /*String type = element.getElementsByTagName("type").item(0).getTextContent();
@@ -231,7 +238,7 @@ public class Model extends Observable {
     public void setTime(int time){
         if (time<row) {
             this.time = time;
-            try {
+     /*       try {
                 if((line=in.readLine())!=null){
                     out.println(line);
                     out.flush();
@@ -239,6 +246,17 @@ public class Model extends Observable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            */
+            if (connected){
+                String line2 = "";
+
+                for (int i = 0; i<flightData[0].length;i++){
+                    line2=line2+flightData[time][i]+",";
+                }
+                out.println(line2);
+                out.flush();
+            }
+
             setChanged();
             notifyObservers("time");
         }
@@ -299,6 +317,19 @@ public class Model extends Observable {
         return featuresList;
     }
 
+    public String getFeatureItem(int i){
+        return features[i];
+    }
+
+    public XYChart.Series<Number,Number> getFeatureChart(int feature){
+
+        XYChart.Series<Number,Number> series = new XYChart.Series<Number,Number>();
+        for (int i =0 ; i < flightData.length ; i++){
+            series.getData().add(new XYChart.Data<Number,Number>( i, flightData[i][feature]));
+        }
+       return series;
+
+    }
 
     public void connect() throws IOException, InterruptedException {
         /*
@@ -307,8 +338,12 @@ public class Model extends Observable {
         --fdm=null
          */
         fg=new Socket("localhost", 5400);
-        in= new BufferedReader(new FileReader(csv));
-        out=new PrintWriter(fg.getOutputStream());
+
+        if (fg.isConnected()){
+            in= new BufferedReader(new FileReader(csv));
+            out=new PrintWriter(fg.getOutputStream());
+            connected = true;
+        }
        /* String line;
         while((line=in.readLine())!=null) {out.println(line);
         out.flush();
