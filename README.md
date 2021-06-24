@@ -9,6 +9,10 @@ Watch a graph that represents the attributes of your flight
 
 ![alt text](https://raw.githubusercontent.com/avihu2929/Flight-Simulator/master/graph.png)
 
-Choose an anomaly detector alogrithm ![alt text](https://raw.githubusercontent.com/avihu2929/Flight-Simulator/master/choosealgo.png) 
+Choose an anomaly detector alogrithm
+
+![alt text](https://raw.githubusercontent.com/avihu2929/Flight-Simulator/master/choosealgo.png) 
+
 and watch the result
+
 ![alt text](https://raw.githubusercontent.com/avihu2929/Flight-Simulator/master/algo.png)
