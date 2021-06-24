@@ -16,3 +16,10 @@ Choose an anomaly detector alogrithm
 and watch the result
 
 ![alt text](https://raw.githubusercontent.com/avihu2929/Flight-Simulator/master/algo.png)
+
+
+And of course watch your flight in real time, with Flight Gear simulation (link below)
+
+![](1WAOQ3.gif)
+
+https://www.flightgear.org/
