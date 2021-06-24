@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.BorderPane?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" fx:controller="view.joystick.JoystickPanelController" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <Slider fx:id="rudder" BorderPane.alignment="CENTER" />
+   </bottom>
+   <left>
+      <Slider fx:id="throttle" orientation="VERTICAL" BorderPane.alignment="CENTER" />
+   </left>
+   <center>
+      <Canvas fx:id="joystick" height="200.0" width="200.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
