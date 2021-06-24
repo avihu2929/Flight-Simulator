@@ -24,6 +24,7 @@ public class ViewModel extends Observable implements Observer {
 
     public StringProperty FeaturesLabel;
     public StringProperty JoystickLabel;
+    public StringProperty AlgoLabel;
     public StringProperty ClocksLabel;
     public DoubleProperty Time;
     public StringProperty TimeLabel;
@@ -41,6 +42,7 @@ public class ViewModel extends Observable implements Observer {
 
         FeaturesLabel = new SimpleStringProperty();
         JoystickLabel = new SimpleStringProperty();
+        AlgoLabel = new SimpleStringProperty();
         ClocksLabel = new SimpleStringProperty();
         Time = new SimpleDoubleProperty();
         TimeLabel = new SimpleStringProperty();
@@ -89,9 +91,10 @@ public class ViewModel extends Observable implements Observer {
                   //  FeaturesLabel.set(m.getFeaturesList());
                     featureCount++;
                     break;
+
                 case "csv":
                     JoystickLabel.set(" Aileron: 0"+
-                            "\n Elevators: 0"+
+                            "\n Elevator: 0"+
                             "\n Rudder: 0"+
                             "\n Throttle: 0");
                     ClocksLabel.set("Roll: 0"+
@@ -105,7 +108,7 @@ public class ViewModel extends Observable implements Observer {
                                 Time.set(m.getTime());
                                 TimeLabel.set(m.getTime()+"");
                                 JoystickLabel.set(" Aileron: " + m.getFlightData(features)[0] +
-                                        "\n Elevators: " + m.getFlightData(features)[1] +
+                                        "\n Elevator: " + m.getFlightData(features)[1] +
                                         "\n Rudder: " + m.getFlightData(features)[2]+
                                         "\n Throttle: "+ m.getFlightData(features)[3]);
                                 ClocksLabel.set("Roll: "+m.getFlightData(features)[4]+
@@ -114,9 +117,15 @@ public class ViewModel extends Observable implements Observer {
                         });
                     }
                     break;
+                case "algo":
+                    AlgoLabel.set(m.getAnomaly());
+                    break;
             }
         }
     }
 
 
+    public void chooseAlgo() {
+        m.chooseAlgo();
+    }
 }

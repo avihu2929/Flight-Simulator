@@ -1,17 +1,25 @@
-package view;
+package view.main;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Model;
+import test.AnomalyReport;
+import test.TimeSeries;
+import test.TimeSeriesAnomalyDetector;
 import view_model.ViewModel;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.List;
 
 public class MainWindow extends Application {
 
@@ -27,7 +35,7 @@ public class MainWindow extends Application {
       //  BorderPane root =fxl.load(getClass().getResource("main_window.fxml").openStream());
         Parent root = fxl.load(getClass().getResource("main_window.fxml").openStream());
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 500, 400));
+        primaryStage.setScene(new Scene(root, 515, 400));
 
         MainWindowController mwc = fxl.getController();
         mwc.setViewModel(vm);
@@ -41,6 +49,11 @@ public class MainWindow extends Application {
                 m.stopThreads();
             }
         });
+
+        //------------------------
+
+
+        //------------------------
     }
 
 

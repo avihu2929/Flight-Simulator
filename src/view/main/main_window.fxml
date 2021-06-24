@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -17,7 +18,10 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane prefHeight="281.0" prefWidth="478.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
+<?import view.controls.ControlPanel?>
+<?import javafx.scene.control.ScrollPane?>
+<BorderPane prefHeight="281.0" prefWidth="478.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.main.MainWindowController">
+
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -25,7 +29,8 @@
             <items>
                <MenuItem mnemonicParsing="false" text="Open" />
               <MenuItem mnemonicParsing="false" text="Close" />
-                <MenuItem mnemonicParsing="false" text="Connect" onAction="#connect" />
+                <MenuItem mnemonicParsing="false" text="Choose algo" onAction="#algochoice"/>
+                <MenuItem mnemonicParsing="false" onAction="#connect" text="Connect" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
@@ -41,24 +46,11 @@
         </menus>
       </MenuBar>
    </top>
+
    <bottom>
-      <AnchorPane prefHeight="55.0" prefWidth="400.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button layoutX="7.0" layoutY="8.0" mnemonicParsing="false" onAction="#openButton" text="Open" />
-            <Button layoutX="53.0" layoutY="8.0" mnemonicParsing="false" text="&lt;&lt;" />
-            <Button layoutX="86.0" layoutY="8.0" mnemonicParsing="false" text="&lt;" />
-            <Button fx:id="start_btn" layoutX="111.0" layoutY="8.0" mnemonicParsing="false" onAction="#onStart" text="Start" />
-            <Button layoutX="152.0" layoutY="8.0" mnemonicParsing="false" onAction="#onPause" text="Pause" />
-            <Button layoutX="200.0" layoutY="8.0" mnemonicParsing="false" onAction="#onStop" text="Stop" />
-            <Button layoutX="241.0" layoutY="8.0" mnemonicParsing="false" text="&gt;" />
-            <Button layoutX="266.0" layoutY="8.0" mnemonicParsing="false" text="&gt;&gt;" />
-            <Slider fx:id="time_slider" blockIncrement="1.0" layoutX="7.0" layoutY="36.0" majorTickUnit="500.0" max="2000.0" minorTickCount="250" prefHeight="14.0" prefWidth="456.0" showTickLabels="true" showTickMarks="true" />
-            <TextField fx:id="speed_text" layoutX="372.0" layoutY="7.0" prefHeight="26.0" prefWidth="43.0" text="1.0" />
-            <Label fx:id="time_label" layoutX="424.0" layoutY="12.0" text="00:00:00" />
-            <Label layoutX="307.0" layoutY="12.0" text="Play Speed" />
-         </children>
-      </AnchorPane>
+       <ControlPanel fx:id="ControlPanel"/>
    </bottom>
+
    <center>
       <GridPane BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -69,9 +61,16 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
+
          <children>
             <Label fx:id="joystick_label" text="Label" GridPane.columnIndex="1" />
             <Label fx:id="clocks_label" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+             <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="1" >
+                 <content>
+                     <Label fx:id="algo_label" text="Labeld" />
+                 </content>
+             </ScrollPane>
             <SplitPane dividerPositions="0.5677339901477834" prefHeight="92.0" prefWidth="196.0">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -84,7 +83,9 @@
                             <NumberAxis side="LEFT" />
                           </yAxis>
                         </LineChart>
-                     </children></AnchorPane>
+                     </children>
+                </AnchorPane>
+
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                      <children>
                         <LineChart minHeight="141.0" minWidth="200.0" prefHeight="155.0" prefWidth="219.0">
@@ -99,11 +100,11 @@
                   </AnchorPane>
               </items>
             </SplitPane>
-            
 
          </children>
       </GridPane>
    </center>
+
    <left>
       <ListView fx:id="features_list" prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="CENTER" />
    </left>

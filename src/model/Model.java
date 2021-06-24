@@ -10,6 +10,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import test.AnomalyReport;
+import test.TimeSeries;
+import test.TimeSeriesAnomalyDetector;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -17,6 +20,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -39,6 +44,10 @@ public class Model extends Observable {
     PrintWriter out;
     String line;
     String[] features;
+    String[] ChosenAlgo;
+    String ChosenCSV;
+    String anomaly="";
+
 
     private class TimeThread extends TimerTask{
 
@@ -171,12 +180,14 @@ public class Model extends Observable {
     }
     public void readCSV(File file) throws IOException {
        // flightData = new float[2174][42];
+        ChosenCSV = file.getName();
         initFlightData(file);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         int prevComma=0;
         int countRow = 0;
         int countCol = 0;
         String line = bufferedReader.readLine();
+        line = bufferedReader.readLine();
         while (line!=null){
             for (int i=0;i<line.length();i++) {
                 if (line.charAt(i) == ',') {
@@ -284,7 +295,51 @@ public class Model extends Observable {
 
     }
     //Open XML CSV files funcions --- end
+    public void chooseAlgo() {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Choose settings file");
+        fc.setInitialDirectory(new File("./src/algo"));
+       ChosenAlgo = fc.showOpenDialog(null).getName().split("\\.");
+       System.out.println(ChosenAlgo[0]);
+       readAlgo();
+    }
 
+    public String getAnomaly() {
+
+      return anomaly;
+    }
+
+    public void readAlgo(){
+        anomaly="";
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+            String path=System.getProperty("user.dir");
+            System.out.println(path);
+            //  System.out.println("enter the class name");
+            String className="algo."+ChosenAlgo[0];
+            in.close();
+            URLClassLoader url = URLClassLoader.newInstance(new URL[] {
+                    new URL("file:///"+path+"\\src\\")
+            });
+            Class<?> c = url.loadClass(className);
+            TimeSeries ts = new TimeSeries("resources/reg_flight2.csv");
+            TimeSeriesAnomalyDetector algo = (TimeSeriesAnomalyDetector) c.newInstance();
+            algo.learnNormal(ts);
+            TimeSeries ts1=new TimeSeries("resources/"+ChosenCSV);
+            List<AnomalyReport> reports = algo.detect(ts1);
+            for(AnomalyReport ar : reports) {
+                anomaly+=ar.description+":\n"+ar.timeStep+"\n";
+
+                System.out.println(anomaly);
+               // System.out.println(ar.description+" - "+ar.timeStep);
+            }
+            setChanged();
+            notifyObservers("algo");
+            System.out.println("/**************************************/");
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public  float getFlightData(int feature){
         return flightData[time][feature];
