@@ -73,6 +73,10 @@ public class ViewModel extends Observable implements Observer {
 
     }
 
+    public  Map<String, ArrayList<String>> getFeatureCorrelationMap() {
+        return m.featureCorrelationMap;
+    }
+
     public void connect() throws IOException, InterruptedException {
         m.connect();
     }

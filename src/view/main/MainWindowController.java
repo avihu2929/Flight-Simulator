@@ -31,6 +31,9 @@ public class MainWindowController implements Observer {
     @FXML
     LineChart LineChart;
 
+    @FXML
+    LineChart CorrelatedLineChart;
+
 
     public void setViewModel(ViewModel vm) {
         this.vm = vm;
@@ -44,6 +47,21 @@ public class MainWindowController implements Observer {
                 System.out.println(features_list.getSelectionModel().getSelectedIndex());
                 LineChart.getData().clear();
                 LineChart.getData().add(vm.getFeatureChart(features_list.getSelectionModel().getSelectedIndex()));
+                // ============= Correlated Feature Chart =============
+                String selectedFeatureName = features_list.getSelectionModel().getSelectedItem();
+                CorrelatedLineChart.getData().clear();
+                if (vm.getFeatureCorrelationMap()!=null) {
+                    if (vm.getFeatureCorrelationMap().containsKey(selectedFeatureName)) {
+                        String correlatedFeatureName = vm.getFeatureCorrelationMap().get(selectedFeatureName).get(0);
+                        ArrayList<String> featuresNames = new ArrayList<String>();
+                        featuresNames.addAll(features_list.getItems());
+                        int correlatedFeatureIndex = featuresNames.indexOf(correlatedFeatureName);
+                        CorrelatedLineChart.getData().clear();
+                        if (correlatedFeatureIndex > 0) {
+                            CorrelatedLineChart.getData().add(vm.getFeatureChart(correlatedFeatureIndex));
+                        }
+                    }
+                }
             }
         });
 

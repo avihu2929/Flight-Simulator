@@ -47,7 +47,7 @@ public class Model extends Observable {
     String[] ChosenAlgo;
     String ChosenCSV;
     String anomaly="";
-
+    public Map<String,ArrayList<String>> featureCorrelationMap;
 
     private class TimeThread extends TimerTask{
 
@@ -178,6 +178,8 @@ public class Model extends Observable {
 
 
     }
+
+    // load CSV file and read and write it to filghtdata[][]
     public void readCSV(File file) throws IOException {
        // flightData = new float[2174][42];
         ChosenCSV = file.getName();
@@ -295,6 +297,9 @@ public class Model extends Observable {
 
     }
     //Open XML CSV files funcions --- end
+
+
+
     public void chooseAlgo() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Choose settings file");
@@ -322,7 +327,8 @@ public class Model extends Observable {
                     new URL("file:///"+path+"\\src\\")
             });
             Class<?> c = url.loadClass(className);
-            TimeSeries ts = new TimeSeries("resources/reg_flight2.csv");
+            TimeSeries ts = new TimeSeries("resources/fixed_flight.csv");
+            featureCorrelationMap = ts.getCorrelations();
             TimeSeriesAnomalyDetector algo = (TimeSeriesAnomalyDetector) c.newInstance();
             algo.learnNormal(ts);
             TimeSeries ts1=new TimeSeries("resources/"+ChosenCSV);
@@ -366,6 +372,7 @@ public class Model extends Observable {
         return features[i];
     }
 
+    //get data for the chart
     public XYChart.Series<Number,Number> getFeatureChart(int feature){
 
         XYChart.Series<Number,Number> series = new XYChart.Series<Number,Number>();
@@ -376,6 +383,7 @@ public class Model extends Observable {
 
     }
 
+    //connect to flightgear
     public void connect() throws IOException, InterruptedException {
         /*
         PUT THIS IN FLIGHTGEAR SETTINGS
@@ -389,12 +397,6 @@ public class Model extends Observable {
             out=new PrintWriter(fg.getOutputStream());
             connected = true;
         }
-       /* String line;
-        while((line=in.readLine())!=null) {out.println(line);
-        out.flush();
-        Thread.sleep(100);}
-        out.close();
-        in.close();
-        fg.close();*/
+
     }
 }

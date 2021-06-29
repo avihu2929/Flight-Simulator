@@ -88,7 +88,7 @@
 
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                      <children>
-                        <LineChart minHeight="141.0" minWidth="200.0" prefHeight="155.0" prefWidth="219.0">
+                        <LineChart fx:id="CorrelatedLineChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" legendVisible="false" minHeight="141.0" minWidth="200.0" prefHeight="155.0" prefWidth="219.0">
                           <xAxis>
                             <NumberAxis side="BOTTOM" />
                           </xAxis>
